@@ -1,0 +1,7 @@
+dependent.form:
+  path: '/autozone'
+  defaults:
+    _form: '\Drupal\autozone\Form\AutozoneForm'
+    _title: 'Autozone'
+  requirements:
+    _permission: 'access content'
