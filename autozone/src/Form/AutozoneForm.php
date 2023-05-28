@@ -24,29 +24,29 @@ class AutozoneForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-
-    $opt = static::foodYears();
     
-    if (empty($form_state->getValue('year'))) {
+    $opt = static::foodCategory();
+    
+    if (empty($form_state->getValue('category'))) {
         $cat = "none";
     }
     else {
-        $cat = $form_state->getValue('Year');
+        $cat = $form_state->getValue('category');
     }
-    if (empty($form_state->getValue('makes'))) {
+    if (empty($form_state->getValue('availableitems'))) {
         $cat2 = "none";
     }
     else {
-        $cat2 = $form_state->getValue('makes');
+        $cat2 = $form_state->getValue('availableitems');
     }
-    if (empty($form_state->getValue('model'))) {
+    if (empty($form_state->getValue('secondavailableitems'))) {
         $cat3 = "none";
     }
     else {
-        $cat3 = $form_state->getValue('model');
+        $cat3 = $form_state->getValue('secondavailableitems');
     }
 
-    $form['year'] = [
+    $form['category'] = [
         '#type' => 'select',
         '#title' => 'Years',
         '#options' => $opt,
@@ -57,11 +57,11 @@ class AutozoneForm extends FormBase {
             'event' => 'change'
         ]
     ];
-    $form['makes'] = [
+    $form['availableitems'] = [
         '#type' => 'select',
-        '#title' => 'Available Makes',
-        '#options' =>static::availableMake($cat),
-        'default_value' => !empty($form_state->getValue('makes')) ? $form_state->getValue('makes') : '--None--',
+        '#title' => 'Makes',
+        '#options' =>static::availableItems($cat),
+        '#default_value' => !empty($form_state->getValue('availableitems')) ? $form_state->getValue('availableitems') : '',
         '#prefix' => '<div id="field-container"',
         '#suffix' => '</div>',
         '#ajax' => [
@@ -70,15 +70,22 @@ class AutozoneForm extends FormBase {
             'event' => 'change'
         ]
     ];
-    $form['model'] = [
+    $form['secondavailableitems'] = [
         '#type' => 'select',
-        '#title' => 'Available Models',
-        '#options' =>static::availableModel($cat2, $cat),
-        '#default_value' => !empty($form_state->getValue('model')) ? $form_state->getValue('model') : '',
+        '#title' => 'Models',
+        '#options' =>static::secondavailableItems($cat2, $cat),
+        '#default_value' => !empty($form_state->getValue('secondavailableitems')) ? $form_state->getValue('secondavailableitems') : '',
         '#prefix' => '<div id="field-container-second"',
+        '#suffix' => '</div>'
+    ];
+    $form['thirdavailableitems'] = [
+        '#type' => 'select',
+        '#title' => 'Engines',
+        '#options' =>static::thirdavailableItems($cat2),
+        '#default_value' => !empty($form_state->getValue('thirdavailableitems')) ? $form_state->getValue('thirdavailableitems') : '',
+        '#prefix' => '<div id="field-container-third"',
         '#suffix' => '</div>',
     ];
-   
     $form['submit'] = [
         '#type' => 'submit',
         '#value' => 'Submit',
@@ -97,15 +104,16 @@ class AutozoneForm extends FormBase {
   }
 
   public function DropdownCallback(array &$form, FormStateInterface $form_state) {
-    return $form['availablemake'];
+    return $form['availableitems'];
   }
   public function SecondDropdownCallback(array &$form, FormStateInterface $form_state) {
-    return $form['availablemodel'];
+    return $form['secondavailableitems'];
+  }
+  public function ThirdDropdownCallback(array &$form, FormStateInterface $form_state) {
+    return $form['thirdavailableItems'];
   }
  
-  
-  public function foodYears() {
-   
+  public function foodCategory() {
     $i = 2023;
     $years = [];
     for ($i=2023; $i >= 1995 ; $i--) { 
@@ -114,7 +122,7 @@ class AutozoneForm extends FormBase {
    return $years;
   }
 
-  public function availablemake($year) {
+  public function availableItems($year) {
     $url = 'https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForManufacturerAndYear/mer?year='.$year.'&format=json';
     $data = $this->getJsonContent($url, 'MakeId', 'MakeName');
     if(empty($data)) {
@@ -126,20 +134,16 @@ class AutozoneForm extends FormBase {
     $response = file_get_contents($url);
     $cat_facts = Json::decode($response);
     $data = [];
-    //$data[] = [''=>'-None-'];
     foreach ($cat_facts as  $cat_fact) {
-        $i = 0;
         foreach ($cat_fact as $item) {
-            $data[$item[$id]] = $item[$name];
-        }
+           $data[$item[$id]] = $item[$name];
+       }
     }
     
     return $data;
   }
 
-  public function availablemodel($model_id, $year) {
-    // $url = 'https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeId/'.$model_id.'?format=json';
-    // $data = $this->getJsonContent($url, 'Make_Id', 'Make_Name');
+  public function secondavailableItems($model_id, $year) {
     $url = 'https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeIdYear/makeId/'.$model_id.'/modelyear/'.$year.'?format=json';
     $data = $this->getJsonContent($url, 'Model_ID', 'Model_Name');
     if(empty($data)) {
@@ -148,8 +152,13 @@ class AutozoneForm extends FormBase {
     return $data;
   }
 
-  
-
+  public function thirdavailableItems($model_id) {
+    // $url = 'https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeIdYear/makeId/'.$model_id.'/modelyear/'.$year.'?format=json';
+    // $data = $this->getJsonContent($url, 'Model_ID', 'Model_Name');
+    
+    // return $data;
+    return [''=>'-None-'];
+  }
 
 
 }
