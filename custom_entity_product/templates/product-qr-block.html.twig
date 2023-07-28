@@ -1,0 +1,10 @@
+<fieldset>
+    <legend class="fieldset__legend fieldset__legend--visible form-required">
+        <span class="fieldset__label">{{ 'Scan QR code' | t }}</span>
+    </legend>
+    <p> {{ "Product purchase link for mobile" | t }}
+    <div class="qr-code-generator">
+        <div id="productqr"></div>
+    </div>
+</fieldset>
+<input type="hidden" value="{{ contents.url }}" id="url">

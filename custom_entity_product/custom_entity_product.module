@@ -1,0 +1,13 @@
+<?php
+use Drupal\Core\Render\Markup;
+
+/**
+ * Implements hook_theme().
+ */
+function custom_entity_product_theme($existing, $type, $theme, $path) {
+    return [
+      'product_qr_block' => [
+        'variables' => ['contents' => []],
+      ],
+    ];
+}

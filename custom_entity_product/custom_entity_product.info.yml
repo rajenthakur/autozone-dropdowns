@@ -1,0 +1,8 @@
+name: Custom Entity products
+description: Show products and purchase via qr code.
+package: Custom Entity
+type: module
+core_version_requirement: ^9
+dependencies:
+ - drupal:block
+ - drupal:config

@@ -1,0 +1,45 @@
+uuid: d10bc781-7022-479a-b13a-e7adadc9d440
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.products.field_purchase_link
+    - field.field.node.products.field_product_descriptions
+    - field.field.node.products.field_product_image
+    - node.type.products
+  module:
+    - image
+    - text
+    - user
+_core:
+  default_config_hash: 8L6jq_RtSn-QLtDkjEi2NhJhpjPqVldA_i_AjU3XzFc
+id: node.products.default
+targetEntityType: node
+bundle: products
+mode: default
+content:
+  field_product_descriptions:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_product_image:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_purchase_link: true
